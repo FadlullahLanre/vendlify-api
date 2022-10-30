@@ -325,7 +325,7 @@ const updateMe = catchAsync(async (req, res, next) => {
 		return next(new AppError('This route isnt for updating password', 400));
 	}
 	//2 Filter unwanted fields
-	const filteredBody = filterObj(req.body, 'userName', 'email');
+	const filteredBody = filterObj(req.body, 'userName', 'email', 'phoneNumber');
 
 	//2 Update user data
 	const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
