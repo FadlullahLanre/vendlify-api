@@ -4,11 +4,11 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
 const vendorSchema = new mongoose.Schema({
-	brandName : {
+	brandName: {
 		type: String,
-        unique: true,
-		trim : true,
-		required : [true, 'Must provide brandname']
+		unique: true,
+		trim: true,
+		required: [true, 'Must provide brandname']
 	},
 	email: {
 		type: String,
@@ -24,33 +24,48 @@ const vendorSchema = new mongoose.Schema({
 		minLength: 8,
 		select: false,
 	},
-    phoneNumber : {
+	passwordConfirm: {
         type: String,
-        required: [true, 'Please enter phone number'],
-        validate: [validator.phoneNumber, 'Please provide a valid phone number']
+        required: [true, 'Please confirm password'],
+		validate: {
+			validator: function (el) {
+				return el === this.password;
+			},
+			message: 'Passwords mismatch',
+		},
     },
-    address: {
-        type: String,
-        
-    },
-    state_region: {
-        type: String,
-    },
-    activeSchool: {
-        type: String
-    },
-    services: {
-        type: String
-    },
-    working_hour: {
-        type: String
-    },
-    picture: {
-        type: Buffer
-    },
-    description: {
-        type: String
-    },
+	phoneNumber: {
+		type: String,
+		required: [true, 'Please enter phone number'],
+		validate: [validator.phoneNumber, 'Please provide a valid phone number']
+	},
+	address: {
+		type: String,
+
+	},
+	state_region: {
+		type: String,
+	},
+	activeSchool: {
+		type: String
+	},
+	services: {
+		type: String
+	},
+	working_hour: {
+		type: String
+	},
+	picture: {
+		type: String
+	},
+	description: {
+		type: String
+	},
+	subscription: {
+		type: String,
+		enum: ["basic", "standard", "premium"],
+		default: "basic",
+	},
 	passwordResetToken: String,
 	passwordResetExpires: Date,
 	confirmEmailToken: String,
@@ -65,7 +80,7 @@ const vendorSchema = new mongoose.Schema({
 		select: false,
 	}
 },
-{ timestamps : true});
+	{ timestamps: true });
 
 //Document middleware for encrpting password
 vendorSchema.pre('save', async function (next) {

@@ -9,6 +9,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const userRoute = require('./routes/user');
 const vendorRoute = require('./routes/vendor');
+const orderRoute = require('./routes/order');
 const connectDB = require('./DB/connect');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./utils/globalErrors');
@@ -42,6 +43,7 @@ app.use(xss());
 
 app.use('/api/v1/vendors', vendorRoute);
 app.use('/api/v1/users', userRoute);
+app.use('/api/v1/orders', orderRoute);
 app.get('/', function (req, res) {
 	res.send({ message : 'Welcome to the Vendlify api!'});
   
