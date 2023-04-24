@@ -24,12 +24,12 @@ const sendEmail = (options) => {
 };
 
 const signToken = (id) =>
-	jwt.sign({ id }, process.env.JWT_SECRET, {
+	jwt.sign({ id, role }, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
 	});
 
 const createSendToken = catchAsync(async (user, statusCode, res) => {
-	const token = signToken(user._id);
+	const token = signToken(user._id, user.role);
 
 	user.loggedOut = false;
 	await user.save({ validateBeforeSave: false });
@@ -61,11 +61,11 @@ const filterObj = (obj, ...allowedFields) => {
 
 const signup = catchAsync(async (req, res, next) => {
 	const user = await User.create({
-		userName: req.body.userName,
+		user_name: req.body.user_name,
 		email: req.body.email,
 		password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm,
-        phoneNumber: req.body.phoneNumber
+        password_confirm: req.body.password_confirm,
+        phone_number: req.body.phone_number
 		
 	});
 
@@ -306,7 +306,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
 	}
 	//3 if so, update password
 	user.password = req.body.password;
-	user.passwordConfirm = req.body.passwordConfirm;
+	user.password_confirm = req.body.password_confirm;
 
 	await user.save();
 
@@ -321,7 +321,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
 
 const updateMe = catchAsync(async (req, res, next) => {
 	//1 create error if user POSTs password data
-	if (req.body.password || req.body.passwordConfirm) {
+	if (req.body.password || req.body.password_confirm) {
 		return next(new AppError('This route isnt for updating password', 400));
 	}
 	//2 Filter unwanted fields

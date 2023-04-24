@@ -10,6 +10,11 @@ const xss = require('xss-clean');
 const userRoute = require('./routes/user');
 const vendorRoute = require('./routes/vendor');
 const orderRoute = require('./routes/order');
+const productRoute = require('./routes/product');
+const schoolRoute = require('./routes/school');
+const mFeeRoute = require('./routes/miscellaneousFee');
+const dFeeRoute = require('./routes/deliveryFee');
+const brandServiceRoute = require('./routes/brandService');
 const connectDB = require('./DB/connect');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./utils/globalErrors');
@@ -44,6 +49,12 @@ app.use(xss());
 app.use('/api/v1/vendors', vendorRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/orders', orderRoute);
+app.use('/api/v1/products', productRoute);
+app.use('/api/v1/school', schoolRoute);
+app.use('/api/v1/miscellaneous', mFeeRoute);
+app.use('/api/v1/delivery', dFeeRoute);
+app.use('/api/v1/services', brandServiceRoute);
+
 app.get('/', function (req, res) {
 	res.send({ message : 'Welcome to the Vendlify api!'});
   

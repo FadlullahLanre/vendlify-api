@@ -23,16 +23,16 @@ const sendEmail = (options) => {
 	transporter.sendMail(mailOptions);
 };
 
-const signToken = (id) =>
-	jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (id, role) =>
+	jwt.sign({ id, role }, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
 	});
 
 const createSendToken = catchAsync(async (vendor, statusCode, res) => {
-	const token = signToken(vendor._id);
+	const token = signToken(vendor._id, vendor.role);
 
 	vendor.loggedOut = false;
-	await user.save({ validateBeforeSave: false });
+	await vendor.save({ validateBeforeSave: false });
 
 	vendor.password = undefined;
 	vendor.active = undefined;
@@ -61,10 +61,11 @@ const filterObj = (obj, ...allowedFields) => {
 
 const signup = catchAsync(async (req, res, next) => {
 	const vendor = await Vendor.create({
-		brandName: req.body.brandName,
+		full_name: req.body.full_name,
 		email: req.body.email,
 		password: req.body.password,
-        phoneNumber: req.body.phoneNumber
+		password_confirm: req.body.password_confirm,
+        phone_number: req.body.phone_number
 		
 	});
 
@@ -74,7 +75,7 @@ const signup = catchAsync(async (req, res, next) => {
 	//3 send to user mail
 	const confirmURL = `${req.protocol}://${req.get(
 		'host'
-	)}/api/v1/vendor/confirmEmail/${confirmToken}`;
+	)}/api/v1/vendors/confirmEmail/${confirmToken}`;
 
 	const message = `Confirm email address using this <a href=${confirmURL}>Link</a>.`;
 
@@ -223,7 +224,7 @@ const resendEmail = catchAsync(async (req, res, next) => {
 	//3 send to user mail
 	const confirmURL = `${req.protocol}://${req.get(
 		'host'
-	)}/api/v1/vendor/confirmEmail/${confirmToken}`;
+	)}/api/v1/vendors/confirmEmail/${confirmToken}`;
 
 	const message = `Confirm email address using this <a href=${confirmURL}>Link</a>.`;
 
@@ -282,10 +283,10 @@ const protect = catchAsync(async (req, res, next) => {
 });
 
 const logout = catchAsync(async (req, res, next) => {
-	const user = await Vendor.findOne({
+	const vendor = await Vendor.findOne({
 		email: req.vendor.email,
 	});
-	user.loggedOut = true;
+	vendor.loggedOut = true;
 	await vendor.save({ validateBeforeSave: false });
 
 	res.status(200).json({
@@ -305,7 +306,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
 	}
 	//3 if so, update password
 	vendor.password = req.body.password;
-	//user.passwordConfirm = req.body.passwordConfirm;
+	vendor.password_confirm = req.body.password_confirm;
 
 	await vendor.save();
 
@@ -318,13 +319,13 @@ const updatePassword = catchAsync(async (req, res, next) => {
 	});
 });
 
-const updateVendor = catchAsync(async (req, res, next) => {
+const addBankDetails = catchAsync(async (req, res, next) => {
 	//1 create error if user POSTs password data
 	if (req.body.password) {
 		return next(new AppError('This route isnt for updating password', 400));
 	}
 	//2 Filter unwanted fields
-	const filteredBody = filterObj(req.body, 'brandName', 'email', 'address', 'state_region', 'services', 'working_hour', 'description');
+	const filteredBody = filterObj(req.body, 'bank_details');
 
 	//2 Update user data
 	const updatedVendor = await Vendor.findByIdAndUpdate(req.vendor.id, filteredBody, {
@@ -350,5 +351,5 @@ module.exports = {
 	resendEmail,
 	protect,
 	logout,
-	updateMe
+	addBankDetails
 };

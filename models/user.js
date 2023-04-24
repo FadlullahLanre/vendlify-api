@@ -4,7 +4,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-	userName : {
+	user_name : {
 		type: String,
 		trim : true,
 		required : [true, 'Must provide username']
@@ -20,10 +20,10 @@ const userSchema = new mongoose.Schema({
 	password: {
 		type: String,
 		required: [true, 'Please enter password'],
-		minLength: 8,
+		minLength: 5,
 		select: false,
 	},
-    passwordConfirm: {
+    password_confirm: {
         type: String,
         required: [true, 'Please confirm password'],
 		validate: {
@@ -33,10 +33,16 @@ const userSchema = new mongoose.Schema({
 			message: 'Passwords mismatch',
 		},
     },
-    phoneNumber : {
+    phone_number : {
         type: String,
-        required: [true, 'Please enter phone number']
+        required: [true, 'Please enter phone number'],
+		unique: true,
+        match: [/^(\+\d{1,3})?\d{11}$/, "Phone number must start with +234 or 0"]
     },
+	role: {
+		type: String,
+		default: 'user'
+	},
 	passwordResetToken: String,
 	passwordResetExpires: Date,
 	confirmEmailToken: String,
@@ -59,7 +65,7 @@ userSchema.pre('save', async function (next) {
 		return next();
 	}
 	this.password = await bcrypt.hash(this.password, 12);
-	this.passwordConfirm = undefined;
+	this.password_confirm = undefined;
 	next();
 });
 

@@ -4,11 +4,16 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
 const vendorSchema = new mongoose.Schema({
-	brandName: {
+	full_name: {
+		type: String,
+		trim: true,
+		required: [true, 'Must provide full name']
+	},
+	brand_name: {
 		type: String,
 		unique: true,
 		trim: true,
-		required: [true, 'Must provide brandname']
+		default: "",
 	},
 	email: {
 		type: String,
@@ -21,10 +26,19 @@ const vendorSchema = new mongoose.Schema({
 	password: {
 		type: String,
 		required: [true, 'Please enter password'],
-		minLength: 8,
+		minLength: 6,
 		select: false,
 	},
-	passwordConfirm: {
+	role:{
+		type: String,
+		default: 'vendor'
+	},
+	bank_details: {
+		bank_name: {type: String},
+		account_number: {type: Number},
+		account_name: {type: String}
+	},
+	password_confirm: {
         type: String,
         required: [true, 'Please confirm password'],
 		validate: {
@@ -34,32 +48,39 @@ const vendorSchema = new mongoose.Schema({
 			message: 'Passwords mismatch',
 		},
     },
-	phoneNumber: {
+	phone_number: {
 		type: String,
 		required: [true, 'Please enter phone number'],
-		validate: [validator.phoneNumber, 'Please provide a valid phone number']
+		unique: true,
+        match: [/^(\+\d{1,3})?\d{11}$/, "Phone number must start with +234 or 0"]
 	},
 	address: {
 		type: String,
-
 	},
 	state_region: {
 		type: String,
 	},
-	activeSchool: {
+	location: {
+		type: String,
+		default: ""
+	},
+	brand_services: {
+		type: [String]
+	},
+	working_hours: {
+		type: String,
+		default: ""
+	},
+	brand_img: {
+		type: String,
+		default: ""
+	},
+	cloudinary_id:{
 		type: String
 	},
-	services: {
-		type: String
-	},
-	working_hour: {
-		type: String
-	},
-	picture: {
-		type: String
-	},
-	description: {
-		type: String
+	brand_description: {
+		type: String,
+		default: ""
 	},
 	subscription: {
 		type: String,
@@ -88,7 +109,7 @@ vendorSchema.pre('save', async function (next) {
 		return next();
 	}
 	this.password = await bcrypt.hash(this.password, 12);
-	this.passwordConfirm = undefined;
+	this.password_confirm = undefined;
 	next();
 });
 

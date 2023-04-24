@@ -3,7 +3,6 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
 
-
 const order_id = () => {
     let result = 'VEND';
     let length = 4// Customize the length here.
