@@ -21,5 +21,4 @@ const miscellaneousFeeSchema = new mongoose.Schema({
 )
 
 
-
 module.exports = mongoose.model("MiscellaneousFee", miscellaneousFeeSchema)
