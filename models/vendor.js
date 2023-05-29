@@ -11,8 +11,8 @@ const vendorSchema = new mongoose.Schema({
 	},
 	brand_name: {
 		type: String,
-		unique: true,
 		trim: true,
+		default: ''
 	},
 	email: {
 		type: String,
