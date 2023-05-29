@@ -13,7 +13,6 @@ const vendorSchema = new mongoose.Schema({
 		type: String,
 		unique: true,
 		trim: true,
-		default: "",
 	},
 	email: {
 		type: String,
