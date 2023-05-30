@@ -13,6 +13,10 @@ const productSchema = new mongoose.Schema({
 		type: String,
 		default: ""
 	},
+    type:{
+        type: String,
+        required: [true, 'type of food is required']
+    },
     available:{
         type: Boolean,
         default: true
