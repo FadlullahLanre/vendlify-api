@@ -27,7 +27,7 @@ router.route('/signup').post(signup);
 router.route('/forgotPassword').post(forgotPassword);
 router.route('/resendEmail').post(resendEmail);
 router.route('/updatePassword').post(protect,updatePassword);
-router.route('/bank-details/:id').get(protect, getBankDetails);
+router.route('/bank-details/:id').get(getBankDetails);
 router.route('/bank-details/').post(protect, addBankDetails)
 router.route('/resetPassword/:token').post(resetPassword);
 router.route('/confirmEmail/:token').get(confirmEmail);

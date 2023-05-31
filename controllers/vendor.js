@@ -389,6 +389,14 @@ const getVendorsByName = catchAsync(async (req, res, next) => {
 	res.status(200).json({data: vendor});
 });
 
+// const updateBankDetails = catchAsync(async(req, res, next) => {
+// 	const bank_details = await Vendor.findByIdAndUpdate(req.vendor.id,)
+
+// 	if(!bank_details){
+
+// 	}
+// })
+
 module.exports = {
   signup,
   login,
