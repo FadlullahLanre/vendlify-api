@@ -42,7 +42,7 @@ router.patch("/update-vendor/", protect, upload.single("image",), async (req, re
 	try {
   
 	  const vendor_id = req.vendor.id
-	  const { brand_name, brand_description, brand_services, location, working_hours} = req.body
+	  const { brand_name, brand_description, brand_services, location, opening_hour, closing_hour} = req.body
   
 	  // Upload image to cloudinary
 	  await cloudinary.uploader.upload(req.file.path, {folder: 'Vendlify'}, (err, result) => {
@@ -60,7 +60,9 @@ router.patch("/update-vendor/", protect, upload.single("image",), async (req, re
 		  brand_description: brand_description,
 		  brand_services: brand_services,
 		  location: location,
-		  working_hours: working_hours
+		  opening_hour: opening_hour,
+		  closing_hour: closing_hour
+
   
 		}, { new: true }, (err, vendor) => {
 		  if (err) {

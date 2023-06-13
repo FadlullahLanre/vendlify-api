@@ -66,7 +66,11 @@ const vendorSchema = new mongoose.Schema({
 	brand_services: {
 		type: [String]
 	},
-	working_hours: {
+	opening_hour: {
+		type: String,
+		default: ""
+	},
+	closing_hour: {
 		type: String,
 		default: ""
 	},
