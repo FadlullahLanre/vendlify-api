@@ -27,7 +27,7 @@ const getProductById = catchAsync(async (req, res, next) => {
 });
 
 const createProduct = catchAsync(async (req, res) => {
-  const { name, price, image, type } = req.body;
+  const { name, price, image, type, variation } = req.body;
   const vendor_id = req.vendor.id
   const vendor = req.vendor.brand_name
 
@@ -37,7 +37,8 @@ const createProduct = catchAsync(async (req, res) => {
     image,
     type,
     vendor_id,
-    vendor
+    vendor,
+    variation
   });
   res.status(201).json({ status: "success", data: newProduct });
 });

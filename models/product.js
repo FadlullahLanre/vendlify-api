@@ -17,6 +17,9 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, 'type of food is required']
     },
+    variation: {
+        type: String,
+    },
     available:{
         type: Boolean,
         default: true
