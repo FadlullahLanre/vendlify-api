@@ -124,7 +124,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   //1 Get vendor based on email
   const vendor = await Vendor.findOne({ email: req.body.email });
 
-  if (!user) return next(new AppError("Vendor does not exist", 401));
+  if (!vendor) return next(new AppError("Vendor does not exist", 401));
 
   //2 Generate the random reset token
   const resetToken = vendor.createPasswordResetToken();
@@ -175,7 +175,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Token is invalid or has expired", 400));
   }
   vendor.password = req.body.password;
-  vendor.passwordConfirm = req.body.passwordConfirm;
+  vendor.password_confirm = req.body.password_confirm;
   vendor.passwordResetToken = undefined;
   vendor.passwordResetExpires = undefined;
 
@@ -376,18 +376,43 @@ const getAllVendors = catchAsync(async (req, res, next) => {
   if (!vendors) {
     return next(new AppError(`no vendors`));
   }
-  res.status(200).json({total: vendors.length, data:{ vendors} });
+  res.status(200).json({ total: vendors.length, data: { vendors } });
 });
 
 const getVendorsByName = catchAsync(async (req, res, next) => {
+  const vendor = await Vendor.findOne({ brand_name: req.params.brand_name });
 
-	const vendor = await Vendor.findOne({brand_name: req.params.brand_name});
-
-	if(!vendor){
-		return next(new AppError(`no vendor with brand name ${req.params.brand_name}`))
-	}
-	res.status(200).json({data: vendor});
+  if (!vendor) {
+    return next(
+      new AppError(`no vendor with brand name ${req.params.brand_name}`)
+    );
+  }
+  res.status(200).json({ data: vendor });
 });
+
+const updateVendor = catchAsync(async (req, res, next) => {
+  try {
+    const filteredBody = filterObj(req.body, 'brand_services', 'brand_name', 'brand_description', 'location', 'opening_hour', 'closing_hour');
+
+	//2 Update vendor data
+	const updatedVendor = await Vendor.findByIdAndUpdate(req.vendor.id, filteredBody, {
+		new: true,
+		runValidators: true,
+	});
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			vendor: updatedVendor,
+		},
+	});
+}
+  catch(error){
+    next(error)
+    console.error(error)
+  }
+});
+
 
 // const updateBankDetails = catchAsync(async(req, res, next) => {
 // 	const bank_details = await Vendor.findByIdAndUpdate(req.vendor.id,)
@@ -410,5 +435,6 @@ module.exports = {
   addBankDetails,
   getBankDetails,
   getAllVendors,
-  getVendorsByName
+  updateVendor,
+  getVendorsByName,
 };

@@ -18,7 +18,8 @@ const {
 	addBankDetails,
 	getAllVendors,
 	getBankDetails,
-	getVendorsByName
+	getVendorsByName,
+	updateVendor
 } = require('../controllers/vendor');
 
 
@@ -34,15 +35,15 @@ router.route('/confirmEmail/:token').get(confirmEmail);
 router.route('/logout').get(protect, logout);
 router.route('/').get(getAllVendors);
 router.route('/:brand_name').get(getVendorsByName);
+router.route('/update-vendor').patch(protect, updateVendor)
 
 
 
-
-router.patch("/update-vendor/", protect, upload.single("image",), async (req, res, next) => {
+// update vendor image
+router.patch("/update-image/", protect, upload.single("image",), async (req, res, next) => {
 	try {
   
 	  const vendor_id = req.vendor.id
-	  const { brand_name, brand_description, brand_services, location, opening_hour, closing_hour} = req.body
   
 	  // Upload image to cloudinary
 	  await cloudinary.uploader.upload(req.file.path, {folder: 'Vendlify'}, (err, result) => {
@@ -54,19 +55,12 @@ router.patch("/update-vendor/", protect, upload.single("image",), async (req, re
   
 		// update vendor profile
 		Vendor.findByIdAndUpdate(vendor_id, {
-		  brand_name: brand_name,
 		  brand_img: brand_img,
-		  cloudinary_id: cloudinary_id,
-		  brand_description: brand_description,
-		  brand_services: brand_services,
-		  location: location,
-		  opening_hour: opening_hour,
-		  closing_hour: closing_hour
+		  cloudinary_id: cloudinary_id
 
-  
 		}, { new: true }, (err, vendor) => {
 		  if (err) {
-			return res.status(400).json({ message: 'Error updating vendor' });
+			return res.status(400).json({ message: 'Error updating vendor image' });
 		  }
 		  res.status(200).json(vendor);
   
