@@ -3,7 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
 const getAllDFee = catchAsync(async (req, res, next) => {
-  const deliveryFee = await dFee.find({vendor_id: req.vendor.id});
+  const deliveryFee = await dFee.find({vendor_id: req.params.id});
 
   if (!deliveryFee) {
     return next(new AppError("There are no delivery fees", 404));
@@ -16,15 +16,15 @@ const getAllDFee = catchAsync(async (req, res, next) => {
   });
 });
 
-const getDFeeById = catchAsync(async (req, res, next) => {
-  const deliveryFee = await dFee.findById({ _id: req.params.id, vendor_id: req.vendor.id });
+// const getDFeeById = catchAsync(async (req, res, next) => {
+//   const deliveryFee = await dFee.findById({ _id: req.params.id, vendor_id: req.vendor.id });
 
-  if (!deliveryFee) {
-    return next(new AppError(`No delivery Fee with id : ${req.params.id}`, 404));
-  }
+//   if (!deliveryFee) {
+//     return next(new AppError(`No delivery Fee with id : ${req.params.id}`, 404));
+//   }
 
-  res.status(200).json({ status: "success", data: deliveryFee });
-});
+//   res.status(200).json({ status: "success", data: deliveryFee });
+// });
 
 const createDFee = catchAsync(async (req, res) => {
 
@@ -67,7 +67,6 @@ const deleteDFee = catchAsync(async (req, res, next) => {
 
 module.exports = {
   getAllDFee,
-  getDFeeById,
   createDFee,
   updateDFee,
   deleteDFee

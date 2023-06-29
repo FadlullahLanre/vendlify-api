@@ -3,7 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
 const getAllMFee = catchAsync(async (req, res, next) => {
-  const miscellaneousFee = await mFee.find({vendor_id: req.vendor.id});
+  const miscellaneousFee = await mFee.find({vendor_id: req.params.id});
 
   if (!miscellaneousFee) {
     return next(new AppError("There are no miscellaneous fee", 404));
@@ -16,15 +16,15 @@ const getAllMFee = catchAsync(async (req, res, next) => {
   });
 });
 
-const getMFeeById = catchAsync(async (req, res, next) => {
-  const miscellaneousFee = await mFee.findById({ _id: req.params.id, vendor_id: req.vendor.id });
+// const getMFeeById = catchAsync(async (req, res, next) => {
+//   const miscellaneousFee = await mFee.findById({ _id: req.params.id, vendor_id: req.params.id });
 
-  if (!miscellaneousFee) {
-    return next(new AppError(`No miscellaneousFee with id : ${req.params.id}`, 404));
-  }
+//   if (!miscellaneousFee) {
+//     return next(new AppError(`No miscellaneousFee with id : ${req.params.id}`, 404));
+//   }
 
-  res.status(200).json({ status: "success", data: miscellaneousFee });
-});
+//   res.status(200).json({ status: "success", data: miscellaneousFee });
+// });
 
 const createMFee = catchAsync(async (req, res) => {
 
@@ -68,7 +68,6 @@ const deleteMFee = catchAsync(async (req, res, next) => {
 
 module.exports = {
   getAllMFee,
-  getMFeeById,
   createMFee,
   updateMFee,
   deleteMFee

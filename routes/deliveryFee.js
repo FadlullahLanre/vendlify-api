@@ -4,7 +4,6 @@ const {protect} = require("../controllers/vendor");
 const {
     createDFee,
     getAllDFee,
-    getDFeeById,
     updateDFee,
     deleteDFee
 
@@ -14,7 +13,7 @@ const {
 
 const router = express.Router();
 
-router.route("/").post(protect, createDFee).get(getAllDFee);
-router.route("/:id").get(protect, getDFeeById).patch(protect, updateDFee).delete(protect, deleteDFee);
+router.route("/").post(protect, createDFee);
+router.route("/:id").get(getAllDFee).patch(protect, updateDFee).delete(protect, deleteDFee);
 
 module.exports = router;
